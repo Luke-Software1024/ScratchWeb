@@ -27,14 +27,13 @@ def process_image(_image: bytes):
             pixel = image.getpixel((i, j))
             char = color_to_b64[pixel]
             string += char
-        string += " "
+        string += "="
 
     return string
 
 @app.route('/translate', methods=['GET']) 
 def server(): 
     full_txt = request.args["text"].split("|")
-
 
     match txt.split(":")[0]: # Scheme of URI
         case "http" | "https":
