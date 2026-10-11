@@ -34,11 +34,12 @@ def process_image(_image: bytes):
 @app.route('/translate', methods=['GET']) 
 def server(): 
     full_txt = request.args["text"].split("|")
-    txt = full_txt[0]
-    body = full_txt[1]
+
 
     match txt.split(":")[0]: # Scheme of URI
         case "http" | "https":
+            txt = full_txt[0]
+            body = full_txt[1]
             method = methods[request.args["language"]]
             if method in body_methods: 
                 result = method(txt, body)
@@ -65,6 +66,8 @@ def server():
                         text = result.headers[header]
                 data = {"result": "|".join((str(result.status_code), filetype, text))}
         case "ws" | "wss":
+            txt = full_txt[0]
+            body = full_txt[1]
             with connect(txt) as socket:
                 socket.send(body)
                 data = {"result": f"{socket.recv()}"}
