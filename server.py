@@ -67,9 +67,9 @@ def server():
         case "ws" | "wss":
             with connect(txt) as socket:
                 socket.send(body)
-                data = {"result": f"200|t|{socket.recv()}"}
+                data = {"result": f"{socket.recv()}"}
         case _:
-            data = {"result": "426|t|That protocol is not supported. Supported protocols: HTTP, WebSocket"}
+            data = {"result": "ERROR! That protocol is not supported. Supported protocols: HTTP, WebSocket"}
 
     print(data)
     res = jsonify(data)
