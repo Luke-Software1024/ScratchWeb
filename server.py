@@ -6,9 +6,9 @@ from websockets.sync.client import connect
 
 app = Flask(__name__) 
 
-methods = {"am": requests.get, "ar": requests.post, "az": requests.put, "eu": requests.delete, "bg": requests.patch, "ca": requests.options}
-body_methods = (requests.post, requests.put, requests.patch)
-types = {"text/html": "h", "text/css": "c", "text/plain": "t", "image/avif": "i", "image/bmp": "i", "image/gif": "i", "image/jpeg": "i", "image/png": "i", "image/tiff": "i", "application/json": "j"}
+http_methods = {"am": requests.get, "ar": requests.post, "az": requests.put, "eu": requests.delete, "bg": requests.patch, "ca": requests.options}
+http_body_methods = (requests.post, requests.put, requests.patch)
+types = {"text/html": "h", "text/css": "c", "text/plain": "t", "image/avif": "i", "image/bmp": "i", "image/gif": "i", "image/jpeg": "i", "image/png": "i", "image/tiff": "i", "application/json": "j", "application/xml": "x", "text/xml": "x"}
 
 color_to_b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
 def process_image(_image: bytes):
@@ -34,13 +34,14 @@ def process_image(_image: bytes):
 @app.route('/translate', methods=['GET']) 
 def server(): 
     full_txt = request.args["text"].split("|")
+    txt = full_txt[0]
+    body = full_txt[1]
+    command = request.args["language"]
 
     match txt.split(":")[0]: # Scheme of URI
         case "http" | "https":
-            txt = full_txt[0]
-            body = full_txt[1]
-            method = methods[request.args["language"]]
-            if method in body_methods: 
+            method = http_methods[command]
+            if method in http_body_methods: 
                 result = method(txt, body)
 
                 filetype = types.get(result.headers["content-type"].split(";")[0], "d")
@@ -55,7 +56,7 @@ def server():
                 else:
                     filetype = types.get(result.headers["content-type"].split(";")[0], "d")
                 match filetype:
-                    case "h" | "c" | "t" | "j":
+                    case "h" | "c" | "t" | "j" | "x":
                         text = result.text
                     case "i":
                         text = process_image(result.content)
@@ -65,8 +66,6 @@ def server():
                         text = result.headers[header]
                 data = {"result": "|".join((str(result.status_code), filetype, text))}
         case "ws" | "wss":
-            txt = full_txt[0]
-            body = full_txt[1]
             with connect(txt) as socket:
                 socket.send(body)
                 data = {"result": f"{socket.recv()}"}
