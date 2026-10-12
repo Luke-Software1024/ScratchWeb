@@ -35,13 +35,13 @@ def process_image(_image: bytes):
 def server(): 
     full_txt = request.args["text"].split("|")
     txt = full_txt[0]
-    body = full_txt[1]
     command = request.args["language"]
 
     match txt.split(":")[0]: # Scheme of URI
         case "http" | "https":
             method = http_methods[command]
             if method in http_body_methods: 
+                body = full_txt[1]
                 result = method(txt, body)
 
                 filetype = types.get(result.headers["content-type"].split(";")[0], "d")
@@ -66,6 +66,7 @@ def server():
                         text = result.headers[header]
                 data = {"result": "|".join((str(result.status_code), filetype, text))}
         case "ws" | "wss":
+            body = full_txt[1]
             with connect(txt) as socket:
                 socket.send(body)
                 data = {"result": f"{socket.recv()}"}

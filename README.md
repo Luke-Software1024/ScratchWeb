@@ -32,9 +32,8 @@ https://example.com|body
         ^^          ^^
         URL        Body
                If applicable;
-                 Leave empty
-                 if not used
-                (Keep the |)
+               Don't include
+               if not used
 ```
 
 - To one of these languages:
@@ -51,16 +50,17 @@ https://example.com|body
 - The response will be in this format:
 
 ```
-status|filetype|body <- Body
-  ^^      ^^<< Filetype
-Status code    h = Html
-               c = Css
-               t = plainText
-               i = Image (base64 encoded)
-               d = Data (lowercase hex encoded)
-               n = http (Network) header
-               j = Json
-               x = Xml
+status|filetype|body
+  ^^      ^^     ^^
+Status Filetype  Body
+ code  h = Html (text/html)
+       c = Css (text/css)
+       t = plainText (text/plain)
+       i = Image (base64 encoded) (image/*)
+       d = Data (lowercase hex encoded) (*/*)
+       n = Network header (application/http)
+       j = Json (application/json)
+       x = Xml (*/xml)
 ```
 
 # Usage (WebSocket)
@@ -70,7 +70,7 @@ Status code    h = Html
 ```
 wss://example.com|data
        ^^          ^^
-       URL        Data to send
+       URL    Data to send
 ```
 
 - Language is irrelevant.
