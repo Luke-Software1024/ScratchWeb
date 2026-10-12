@@ -60,6 +60,7 @@ Status code    h = Html
                d = Data (lowercase hex encoded)
                n = http (Network) header
                j = Json
+               x = Xml
 ```
 
 # Usage (WebSocket)
