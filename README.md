@@ -81,3 +81,26 @@ response
    ^^
 Server response
 ```
+
+# Usage (`data:` URI)
+
+- Please note that only base64 encoded data is supported.
+- Translate text in the following format:
+
+```
+data:text/plain;base64,SGVsbG8sIFdvcmxkIQ==
+                   ^^
+               data: URI
+```
+
+- Language is irrelevant.
+- The response will be in this format:
+
+```
+filetype|data
+   ^^     ^^
+Filetype; Data
+Mapping
+same as
+  HTTP
+```

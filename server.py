@@ -3,6 +3,7 @@ import requests
 from io import BytesIO
 from PIL import Image, ImageOps
 from websockets.sync.client import connect
+from base64 import b64decode
 
 app = Flask(__name__) 
 
@@ -70,8 +71,20 @@ def server():
             with connect(txt) as socket:
                 socket.send(body)
                 data = {"result": f"{socket.recv()}"}
+        case "data":
+            mimetype = txt.split(":")[1].split(";")[0]
+            filetype = types.get(mimetype, "d")
+            data = b64decode(txt.split(",")[1])
+            match filetype:
+                case "h" | "c" | "t" | "j" | "x":
+                    text = str(data)
+                case "i":
+                    text = process_image(data)
+                case "d":
+                    text = data.hex()
+            data = {"result": "|".join((filetype, text))}
         case _:
-            data = {"result": "ERROR! That protocol is not supported. Supported protocols: HTTP, WebSocket"}
+            data = {"result": "ERROR! That protocol is not supported. Supported protocols: HTTP, WebSocket; Supported URIs: data"}
 
     print(data)
     res = jsonify(data)
