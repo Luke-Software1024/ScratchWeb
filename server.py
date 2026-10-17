@@ -4,6 +4,7 @@ from io import BytesIO
 from PIL import Image, ImageOps
 from websockets.sync.client import connect
 from base64 import b64decode
+import outsrc
 
 app = Flask(__name__) 
 
@@ -77,14 +78,21 @@ def server():
             data = b64decode(txt.split(",")[1])
             match filetype:
                 case "h" | "c" | "t" | "j" | "x":
-                    text = str(data)
+                    text = data.decode()
                 case "i":
                     text = process_image(data)
                 case "d":
                     text = data.hex()
             data = {"result": "|".join((filetype, text))}
+        case "outsrc":
+            func = txt.split(":")[1]
+            arg = full_txt[1]
+
+            func = outsrc.funcs.get(func, lambda _: "ERROR! That Outsource function does not exist. Existent functions: " + ", ".join(outsrc.funcs.keys()))
+            result = func(arg)
+            data = {"result": result}
         case _:
-            data = {"result": "ERROR! That protocol is not supported. Supported protocols: HTTP, WebSocket; Supported URIs: data"}
+            data = {"result": "ERROR! That protocol is not supported. Supported protocols: HTTP, WebSocket; Supported URIs: data, outsrc"}
 
     print(data)
     res = jsonify(data)

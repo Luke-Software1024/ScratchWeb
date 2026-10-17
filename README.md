@@ -73,7 +73,6 @@ wss://example.com|data
        URL    Data to send
 ```
 
-- Language is irrelevant.
 - The response will be in this format:
 
 ```
@@ -93,7 +92,6 @@ data:text/plain;base64,SGVsbG8sIFdvcmxkIQ==
                data: URI
 ```
 
-- Language is irrelevant.
 - The response will be in this format:
 
 ```
@@ -103,4 +101,37 @@ Filetype; Data
 Mapping
 same as
   HTTP
+```
+# ScratchWeb Outsource
+
+ScratchWeb Outsource allows you to 'outsource' tasks to the ScratchWeb server.
+
+## Setup
+
+The file `outsrc.py` must:
+
+- Contain a dictionary named `funcs` mapping function names to function objects.
+- Contain one or more functions that expect a string argument and return a string.
+
+An example is included.
+
+## Usage
+
+- Translate text in the following format:
+
+```
+outsrc:function-name|argument
+            ^^          ^^
+       Function name Argument
+       Indexed into  Passed to
+       funcs dict    function
+       and called
+```
+
+- The response will be in this format:
+
+```
+data
+ ^^
+Returned data
 ```
