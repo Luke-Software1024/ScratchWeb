@@ -135,3 +135,33 @@ data
  ^^
 Returned data
 ```
+
+# Usage (`file:` URI)
+
+- Only the `file` subfolder of ScratchWeb is accessible.
+- Translate text in the following format:
+
+```
+file:///example.txt
+         ^^
+      file: URI
+```
+
+- The response will be in one of these formats:
+- Directory:
+
+```
+l|example.txt|16|2147483647 folder|0|2147483647
+      ^^      ^^     ^^             ^^
+   Filename Size Date modded     Next item
+                 (Unix time)
+```
+
+- File:
+
+```
+d|44617461
+     ^^
+  File contents
+  Hex encoded (lowercase letters)
+```

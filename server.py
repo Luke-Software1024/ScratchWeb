@@ -5,6 +5,7 @@ from PIL import Image, ImageOps
 from websockets.sync.client import connect
 from base64 import b64decode
 import outsrc
+from pathlib import Path
 
 app = Flask(__name__) 
 
@@ -67,11 +68,13 @@ def server():
                     case "n":
                         text = result.headers[header]
                 data = {"result": "|".join((str(result.status_code), filetype, text))}
+        
         case "ws" | "wss":
             body = full_txt[1]
             with connect(txt) as socket:
                 socket.send(body)
                 data = {"result": f"{socket.recv()}"}
+        
         case "data":
             mimetype = txt.split(":")[1].split(";")[0]
             filetype = types.get(mimetype, "d")
@@ -84,6 +87,7 @@ def server():
                 case "d":
                     text = data.hex()
             data = {"result": "|".join((filetype, text))}
+        
         case "outsrc":
             func = txt.split(":")[1]
             arg = full_txt[1]
@@ -91,8 +95,25 @@ def server():
             func = outsrc.funcs.get(func, lambda _: "ERROR! That Outsource function does not exist. Existent functions: " + ", ".join(outsrc.funcs.keys()))
             result = func(arg)
             data = {"result": result}
+
+        case "file":
+            folder = Path("file") / txt.removeprefix("file:///")
+
+            if folder.is_dir():
+                contents = folder.iterdir()
+                format_conts = []
+                for item in contents:
+                    info = item.stat()
+                    format_conts.append("|".join((str(item).split("/")[-1], str(info.st_size), str(info.st_mtime))))
+                data = {"result": "l|" + " ".join(format_conts)}
+            elif folder.is_file():
+                contents = folder.read_bytes()
+                data = {"result": "d|" + contents.hex()}
+            else:
+                data = {"result": "ERROR! That file does not exist."}
+
         case _:
-            data = {"result": "ERROR! That protocol is not supported. Supported protocols: HTTP, WebSocket; Supported URIs: data, outsrc"}
+            data = {"result": "ERROR! That protocol is not supported. Supported protocols: HTTP, WebSocket; Supported URIs: data, outsrc, file"}
 
     print(data)
     res = jsonify(data)
