@@ -111,7 +111,7 @@ ScratchWeb Outsource allows you to 'outsource' tasks to the ScratchWeb server.
 The file `outsrc.py` must:
 
 - Contain a dictionary named `funcs` mapping function names to function objects.
-- Contain one or more functions that expect a string argument and return a string.
+- Contain one or more functions that expect 2 string arguments and return a string.
 
 An example is included.
 
@@ -128,6 +128,7 @@ outsrc:function-name|argument
        and called
 ```
 
+- To a language determined by the script.
 - The response will be in this format:
 
 ```

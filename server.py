@@ -93,7 +93,7 @@ def server():
             arg = full_txt[1]
 
             func = outsrc.funcs.get(func, lambda _: "ERROR! That Outsource function does not exist. Existent functions: " + ", ".join(outsrc.funcs.keys()))
-            result = func(arg)
+            result = func(arg, command)
             data = {"result": result}
 
         case "file":
