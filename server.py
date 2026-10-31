@@ -18,8 +18,8 @@ def process_image(_image: bytes):
     image = Image.open(BytesIO(_image))
     image = image.convert("RGB")
 
-    if image.width > 256 or image.height > 256:
-        image = ImageOps.contain(image, (256, 256))
+    if image.width > 480 or image.height > 360:
+        image = ImageOps.contain(image, (480, 360))
 
     palette = Image.open("palette.png")
     image = image.quantize(palette=palette)

@@ -22,6 +22,27 @@ Route the `translate-service.scratch.mit.edu` to localhost in the Hosts File.
 Create a custom script to interpret the text and language to make a web request.
 <img width="1560" height="943" alt="script" src="https://github.com/user-attachments/assets/1d3f40d1-49b0-486e-9348-dfac99d154ea" />
 
+# General notes
+
+## Directory listing format
+
+```
+l|example.txt|16|2147483647 folder|0|2147483647
+      ^^      ^^     ^^             ^^
+   Filename Size Date modded     Next item
+                 (Unix time)
+```
+
+## Image encoding
+
+- If image size > 480x360:
+   - Scale down to 480x360, maintain aspect ratio.
+- Dither image to 6-bit RGB from palette.png.
+- For each row:
+   - For each column in a row:
+      - Convert the pixel value to a Base64 character.
+   - Output the `=` row delimeter.
+
 # Usage (HTTP)
 
 - Import the `translate` extension to the project.
@@ -148,21 +169,12 @@ file:///example.txt
       file: URI
 ```
 
-- The response will be in one of these formats:
-- Directory:
+- The response will be in this format
 
 ```
-l|example.txt|16|2147483647 folder|0|2147483647
-      ^^      ^^     ^^             ^^
-   Filename Size Date modded     Next item
-                 (Unix time)
-```
-
-- File:
-
-```
-d|44617461
-     ^^
-  File contents
-  Hex encoded (lowercase letters)
+filetype|data
+   ^^     ^^
+Filetype Data
+l = directory Listing (see above)
+d = Data (lowercase hex encoded)
 ```
