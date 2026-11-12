@@ -44,7 +44,12 @@ def server():
         case "http" | "https":
             method = http_methods[command]
             if method in http_body_methods: 
-                body = full_txt[1]
+                filetype = full_txt[1]
+                body = full_txt[2]
+
+                if filetype == "d":
+                    body = bytes.fromhex(body)
+
                 result = method(txt, body)
 
                 filetype = types.get(result.headers["content-type"].split(";")[0], "d")

@@ -49,12 +49,12 @@ l|example.txt|16|2147483647 folder|0|2147483647
 - Translate text in the following format:
 
 ```
-https://example.com|body
-        ^^          ^^
-        URL        Body
-               If applicable;
-               Don't include
-               if not used
+https://example.com|filetype|body
+        ^^             ^^     ^^
+        URL         Filetype Body
+                    d = Data If applicable;
+              t = plain Text Don't include
+                             if not used
 ```
 
 - To one of these languages:
