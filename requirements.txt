@@ -1,4 +1,10 @@
+# Web server
 flask
+
+# Making web requests
 requests
-pillow>=9.3.0
 websockets
+
+# Processing images for b64 format
+# 9.3.0 added features for bmp format, so add it here
+pillow>=9.3.0

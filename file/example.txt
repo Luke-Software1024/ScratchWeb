@@ -1,1 +1,1 @@
-ScratchWeb file:// URI
+This `file` subfolder is used for the `file://` URI.
