@@ -133,7 +133,7 @@ The file `outsrc.py` must:
 
 - Contain a dictionary named `funcs` mapping function names to a tuple containing:
    - A function object
-   - Boolean for enabling raw-URI mode
+   - Integer for invocation mode (0 or less = `outsrc:` URI only, 1 = raw-URI only, 2 or more = both)
 - Contain one or more functions that expect 2 string arguments and return a string.
 
 An example is included.
@@ -141,7 +141,7 @@ An example is included.
 ## Usage
 
 - Translate text in one of these formats:
-- Raw-URI disabled:
+- `outsrc:` URI:
 
 ```
 outsrc:function-name|argument
@@ -152,7 +152,7 @@ outsrc:function-name|argument
        and called
 ```
 
-- Raw-URI enabled:
+- Raw-URI:
 
 ```
 function-name:argument

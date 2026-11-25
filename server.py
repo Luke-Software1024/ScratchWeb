@@ -112,11 +112,14 @@ def server():
             func = txt.split(":")[1]
             arg = "|".join(full_txt[1:])
 
-            # If that function exists, get it. Otherwise, get a placeholder
-            # that returns an error message
-            func = outsrc.funcs.get(func, lambda _: "ERROR! That Outsource function does not exist. Existent functions: " + ", ".join(outsrc.funcs.keys()))[0]
-            result = func(arg, command)
-            data = {"result": result}
+            # If that function exists and outsrc: URI is allowed for it, get
+            # it. Otherwise, get a placeholder that returns an error message
+            if outsrc.funcs.get(func, (0, 0))[1] != 1:
+                func = outsrc.funcs.get(func, (lambda a, b: "ERROR! That Outsource function does not exist. Existent functions: " + ", ".join(outsrc.funcs.keys()), 0))[0]
+                result = func(arg, command)
+                data = {"result": result}
+            else:
+                data = {"result": "ERROR! That Outsource function is not allowed to be invoked by outsrc: URI."}
 
         case "file":
             # Get a file/directory from the file subfolder
@@ -136,7 +139,7 @@ def server():
                 data = {"result": "ERROR! That file does not exist."}
 
         case _:
-            if txt.split(":")[0] in outsrc.funcs and outsrc.funcs[txt.split(":")[0]][1]:
+            if txt.split(":")[0] in outsrc.funcs and outsrc.funcs[txt.split(":")[0]][1] >= 1:
                 # Outsource script with raw-URI format
                 func = txt.split(":")[0]
                 arg = ":".join(txt.split(":")[1:])
@@ -144,6 +147,9 @@ def server():
                 func = outsrc.funcs[func][0]
                 result = func(arg, command)
                 data = {"result": result}
+            elif txt.split(":")[0] in outsrc.funcs:
+                # Raw-URI not allowed!
+                data = {"result": "ERROR! That Outsource function is not allowed to be invoked by Raw-URI."}
             else:
                 # Unknown protocol!
                 data = {"result": "ERROR! That protocol is not supported. Supported protocols: HTTP, WebSocket; Supported URIs: data, outsrc, file"}
