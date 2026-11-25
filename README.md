@@ -131,14 +131,17 @@ ScratchWeb Outsource allows you to 'outsource' tasks to the ScratchWeb server.
 
 The file `outsrc.py` must:
 
-- Contain a dictionary named `funcs` mapping function names to function objects.
+- Contain a dictionary named `funcs` mapping function names to a tuple containing:
+   - A function object
+   - Boolean for enabling raw-URI mode
 - Contain one or more functions that expect 2 string arguments and return a string.
 
 An example is included.
 
 ## Usage
 
-- Translate text in the following format:
+- Translate text in one of these formats:
+- Raw-URI disabled:
 
 ```
 outsrc:function-name|argument
@@ -147,6 +150,14 @@ outsrc:function-name|argument
        Indexed into  Passed to
        funcs dict    function
        and called
+```
+
+- Raw-URI enabled:
+
+```
+function-name:argument
+     ^^          ^^
+Function name Argument
 ```
 
 - To a language determined by the script.

@@ -55,7 +55,7 @@ def server():
             method = http_methods[command]
             if method in http_body_methods: # this method can have a request body
                 filetype = full_txt[1]
-                body = full_txt[2]
+                body = "|".join(full_txt[2:])
 
                 if filetype == "d":
                     body = bytes.fromhex(body)
@@ -87,7 +87,7 @@ def server():
         
         case "ws" | "wss":
             # Send data over WebSocket and get the response
-            body = full_txt[1]
+            body = "|".join(full_txt[1:])
             with connect(txt) as socket:
                 socket.send(body)
                 data = {"result": f"{socket.recv()}"}
@@ -110,11 +110,11 @@ def server():
         case "outsrc":
             # Run a script through ScratchWeb Outsource
             func = txt.split(":")[1]
-            arg = full_txt[1]
+            arg = "|".join(full_txt[1:])
 
             # If that function exists, get it. Otherwise, get a placeholder
             # that returns an error message
-            func = outsrc.funcs.get(func, lambda _: "ERROR! That Outsource function does not exist. Existent functions: " + ", ".join(outsrc.funcs.keys()))
+            func = outsrc.funcs.get(func, lambda _: "ERROR! That Outsource function does not exist. Existent functions: " + ", ".join(outsrc.funcs.keys()))[0]
             result = func(arg, command)
             data = {"result": result}
 
@@ -136,8 +136,17 @@ def server():
                 data = {"result": "ERROR! That file does not exist."}
 
         case _:
-            # Unknown protocol!
-            data = {"result": "ERROR! That protocol is not supported. Supported protocols: HTTP, WebSocket; Supported URIs: data, outsrc, file"}
+            if txt.split(":")[0] in outsrc.funcs and outsrc.funcs[txt.split(":")[0]][1]:
+                # Outsource script with raw-URI format
+                func = txt.split(":")[0]
+                arg = ":".join(txt.split(":")[1:])
+
+                func = outsrc.funcs[func][0]
+                result = func(arg, command)
+                data = {"result": result}
+            else:
+                # Unknown protocol!
+                data = {"result": "ERROR! That protocol is not supported. Supported protocols: HTTP, WebSocket; Supported URIs: data, outsrc, file"}
 
     print(data)
     res = jsonify(data)
@@ -145,4 +154,4 @@ def server():
     return res
     
 if __name__ == '__main__': 
-    app.run(host='127.0.0.1', port=443, ssl_context=("server.crt", "server.key"))
+    app.run(host='127.0.0.1', port=80)#, ssl_context=("server.crt", "server.key"))
