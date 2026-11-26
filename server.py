@@ -97,7 +97,7 @@ def server():
             # WARNING - Only works on base64 encoded data!
             mimetype = txt.split(":")[1].split(";")[0]
             filetype = types.get(mimetype, "d")
-            data = b64decode(txt.split(",")[1])
+            data = b64decode(txt.split(",")[1], "-_") # use base64-URL encoding
             match filetype:
                 case "h" | "c" | "t" | "j" | "x":
                     text = data.decode()
