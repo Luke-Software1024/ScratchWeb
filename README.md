@@ -134,6 +134,9 @@ The file `outsrc.py` must:
 - Contain a dictionary named `funcs` mapping function names to a tuple containing:
    - A function object
    - Integer for invocation mode (0 or less = `outsrc:` URI only, 1 = raw-URI only, 2 or more = both)
+- Contain a dictionary named `alt_ids` mapping custom names to function names that have raw-URI enabled, that may be used to invoke the function in raw-URI form.
+   - ALL functions with raw-URI enabled must be in this dictionary, and NO other functions.
+   - If you don't want a custom raw-URI name, set the custom name to the normal name.
 - Contain one or more functions that expect 2 string arguments and return a string.
 
 An example is included.

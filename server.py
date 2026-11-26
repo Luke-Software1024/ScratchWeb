@@ -139,12 +139,12 @@ def server():
                 data = {"result": "ERROR! That file does not exist."}
 
         case _:
-            if txt.split(":")[0] in outsrc.funcs and outsrc.funcs[txt.split(":")[0]][1] >= 1:
+            if txt.split(":")[0] in outsrc.alt_ids:
                 # Outsource script with raw-URI format
                 func = txt.split(":")[0]
                 arg = ":".join(txt.split(":")[1:])
 
-                func = outsrc.funcs[func][0]
+                func = outsrc.funcs[outsrc.alt_ids[func]][0]
                 result = func(arg, command)
                 data = {"result": result}
             elif txt.split(":")[0] in outsrc.funcs:
@@ -160,4 +160,4 @@ def server():
     return res
     
 if __name__ == '__main__': 
-    app.run(host='127.0.0.1', port=80)#, ssl_context=("server.crt", "server.key"))
+    app.run(host='127.0.0.1', port=443, ssl_context=("server.crt", "server.key"))
